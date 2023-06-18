@@ -2,9 +2,11 @@
   <li>
     <label>
       <input type="checkbox" :checked="todo.done" @change="handleCheck(todo.id)">
-      <span>{{todo.title}}</span>
+      <span v-show="!todo.isEdit">{{todo.title}}</span>
+      <input ref="inputTitle" class="ip1" v-show="todo.isEdit" type="text" :value="todo.title" @blur="handleBlur(todo,$event)" @keyup.enter="handleBlur(todo,$event)">
     </label>
-    <button class="btn btn-danger" @click="handleDelete(todo.id)">削除</button>
+    <button  class="btn btn-danger" @click="handleDelete(todo.id)">削除</button>
+    <button v-show="!todo.isEdit" class="btn btn-edit" @click="handleEdit(todo,$event)">編集</button>
   </li>
 </template>
 
@@ -27,7 +29,30 @@ export default {
           this.$bus.$emit('deleteTodo',id)
         }
       }, 
-    },
+      // 编辑
+      handleEdit(todo,e){
+        // todo.isEdit = true
+        if(todo.hasOwnProperty('isEdit')){
+          todo.isEdit = true
+        }else{
+          this.$set(todo,"isEdit",true)
+        }
+        
+        setTimeout(() => {
+          this.$refs.inputTitle.focus()
+        });
+      },
+
+      handleBlur(todo,e){
+        this.$set(todo,"isEdit",false)
+        this.$bus.$emit('updateTodo',todo.id,e.target.value)
+        console.log(e);
+      },
+        
+      }, 
+      
+      
+    
 }
 </script>
 
@@ -72,6 +97,10 @@ export default {
 
   li:hover button {
     display: block;
+  }
+
+  .ip1 {
+    height: 30px;
   }
 
 </style>

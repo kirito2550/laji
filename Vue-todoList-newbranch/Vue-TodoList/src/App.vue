@@ -1,3 +1,4 @@
+
 <template>
   <div id="root">
     <div class="todo-container">
@@ -38,6 +39,14 @@ export default {
         }
       })
     },
+    // 编辑一个todo
+    updateTodo(id,title){
+      this.todos.forEach((todo)=>{
+        if(todo.id === id){
+          todo.title = title
+        }
+      })
+    },
     // 删除一个todo
     deleteTodo(id){
       this.todos = this.todos.filter((todo)=>{
@@ -73,10 +82,12 @@ export default {
   mounted(){
     this.$bus.$on('checkTodo',this.checkTodo)
     this.$bus.$on('deleteTodo',this.deleteTodo)
+    this.$bus.$on('updateTodo',this.updateTodo)
   },
   beforeDestroy(){
     this.$bus.$off('checkTodo')
     this.$bus.$off('deleteTodo')
+    this.$bus.$off('updateTodo')
   }
 }
 </script>
@@ -103,6 +114,13 @@ export default {
     color: #fff;
     background-color: #da4f49;
     border: 1px solid #bd362f;
+  }
+
+  .btn-edit {
+    color: #fff;
+    background-color: skyblue;
+    border: 1px solid rgb(103, 159, 180);
+    margin-right: 5px;
   }
 
   .btn-danger:hover{
